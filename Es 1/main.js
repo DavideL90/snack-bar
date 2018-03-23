@@ -3,7 +3,9 @@ var num2 = parseInt(prompt("Inserisci un numero:"));
 if(num1 > num2){
   document.write("Il primo numero "+ num1 +" è maggiore del secondo " + num2);
 }
-else{
+else if(num1 < num2){
   document.write("Il primo numero "+ num1 +" è minore del secondo " + num2);
-
+}
+else{
+  document.write("Hai inserito lo stesso numero: " + num1 + " " + num2);
 }
