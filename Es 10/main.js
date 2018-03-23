@@ -33,7 +33,7 @@ var film5 = {
   "voti" : [5, 4.7, 4.8, 5],
   "genere" : "fantasy"
 }
-var film6 ={
+var film6 = {
   "titolo" : "Il curioso caso di Benjamin Button",
   "attori" : ["Brad Pitt ", "Kate Blanchett", "Julia Ormond"],
   "durata" : 166,
@@ -41,52 +41,75 @@ var film6 ={
   "genere" : "drammatico"
 }
 var arrayFilms = [film1, film2, film3, film4, film5];
-var durataMedia = 0;
-var arrayLongFilms = [];
-var mediaBrangelina = 0 //Per calcolare la media dei film in cui hanno recitato i due attori
-var arrayGeneri = ["fantasy", "drammatico", "azione", "romantico", "thriller"]; //array per fare la media in base al genere
 
-//faccio un ciclo per calcolare la media della durata dei film e se ci sono film che durano più di 180 minuti
-for (var i = 0; i < arrayFilms.length; i++) {
-  durataMedia += arrayFilms[i].durata;
-  if(arrayFilms[i].durata > 180){
-    arrayLongFilms.push(arrayFilms[i].titolo);
+var durataMedia = durataMedia(arrayFilms);
+var longMovies = longMovies(arrayFilms);
+var arrBrangelinaMovies = brangelinaVotes(arrayFilms);
+var votesForGenre = mediaGenre(arrayFilms);
+document.write("La durata media dei film è: " + durataMedia + "<br>");
+document.write("Ecco l'elenco dei film che durano più di 180 minuti: " + longMovies + "<br>");
+document.write("Brad e Angelina hanno recitato nei seguenti film con la seguente media dei voti: " + arrBrangelinaMovies + "<br>");
+document.write("Media dei voti ai film in base al genere: " + votesForGenre);
+
+function durataMedia(arrFilms){
+  var mediumTime = 0
+  for (var i = 0; i < arrFilms.length; i++) {
+    mediumTime += arrFilms[i].durata;
   }
+  return mediumTime/arrFilms.length;
 }
-document.write("La durata media dei film è: " + (durataMedia / arrayFilms.length) + "<br>");
-document.write("Ecco l'elenco dei film che durano più di 180 minuti: " + arrayLongFilms + "<br>");
 
-//faccio un ciclo per calcolare la media dei film in cui hanno recitato Brad e Angelina e per calcolare la media in base al genere
-for (var i = 0; i < arrayFilms.length; i++) {
-  if((arrayFilms[i].attori.includes("Brad Pitt")) && (arrayFilms[i].attori.includes("Angelina Jolie"))){
-    for (var x = 0; x < arrayFilms[i].voti.length; x++) {
-      mediaBrangelina += arrayFilms[i].voti[x];
+function longMovies(arrFilms){
+  var arrLongMovies = [];
+  for (var i = 0; i < arrFilms.length; i++) {
+    if(arrFilms[i].durata > 180){
+      arrLongMovies.push(arrFilms[i].titolo);
     }
-    document.write("Brad e Angelina hanno recitato insieme in: " + arrayFilms[i].titolo + ". Il film ha ricevuto una media di: " + Math.round(mediaBrangelina / arrayFilms[i].voti.length) + "<br>");
   }
-  mediaBrangelina = 0;
+  return arrLongMovies;
 }
 
-//faccio un ciclo per calcolare la media in base al genere
-for (var i = 0; i < arrayGeneri.length; i++) {
-  var mediaGeneri = 0;
-  var mediaSingola = 0 //ci salvo la media dei voti dei singoli film
-  var numberOfFilmGenre = 0; //Indica quanti film di quel genere ci sono
-  for (var x = 0; x < arrayFilms.length; x++) {
-    //Non uso includes perché mi darebbe vero anche se il genere è diverso
-    if(arrayGeneri[i] == arrayFilms[x].genere){
-      //faccio un ciclo per fare la media per ogni film. Poi le sommo tra di loro e divido per il numero di film
-      var count = 0;
-      for (var y = 0; y < arrayFilms[x].voti.length; y++) {
-        count += arrayFilms[x].voti[y];
+function brangelinaVotes(arrFilms){
+  var mediaBrangelina = 0;
+  var arrayBrangelina = [];
+  for (var i = 0; i < arrFilms.length; i++) {
+    if((arrFilms[i].attori.includes("Brad Pitt")) && (arrFilms[i].attori.includes("Angelina Jolie"))){
+      for (var x = 0; x < arrFilms[i].voti.length; x++) {
+        mediaBrangelina += arrayFilms[i].voti[x];
       }
-      numberOfFilmGenre++
-      mediaSingola = count / arrayFilms[x].voti.length;
-      mediaGeneri += mediaSingola;
+      var titoloFilm = arrFilms[i].titolo;
+      var mediaVoto = mediaBrangelina / arrFilms[i].voti.length;
+      arrayBrangelina.push(" " + titoloFilm + " = " + Math.round(mediaVoto));
     }
+    mediaBrangelina = 0;
   }
-  if(mediaGeneri != 0){
-    mediaGeneri /= numberOfFilmGenre;
+  return arrayBrangelina;
+}
+
+function mediaGenre(arrFilms){
+  var arrayGeneri = ["fantasy", "drammatico", "azione", "romantico", "thriller"]; //array per fare la media in base al genere
+  var arrayResult = [];
+  for (var i = 0; i < arrayGeneri.length; i++) {
+    var mediaGeneri = 0;
+    var mediaSingola = 0 //ci salvo la media dei voti dei singoli film
+    var numberOfFilmGenre = 0; //Indica quanti film di quel genere ci sono
+    for (var x = 0; x < arrFilms.length; x++) {
+      //Non uso includes perché mi darebbe vero anche se il genere è diverso
+      if(arrayGeneri[i] == arrFilms[x].genere){
+        //faccio un ciclo per fare la media per ogni film. Poi le sommo tra di loro e divido per il numero di film
+        var count = 0;
+        for (var y = 0; y < arrFilms[x].voti.length; y++) {
+          count += arrFilms[x].voti[y];
+        }
+        numberOfFilmGenre++
+        mediaSingola = count / arrFilms[x].voti.length;
+        mediaGeneri += mediaSingola;
+      }
+    }
+    if(mediaGeneri != 0){
+      mediaGeneri /= numberOfFilmGenre;
+    }
+    arrayResult.push(" " + arrayGeneri[i] + " = " + Math.round(mediaGeneri));
   }
-  document.write("La media dei voti per i film di genere " + arrayGeneri[i] + " è uguale a: " + Math.round(mediaGeneri) + "<br>");
+  return arrayResult;
 }
